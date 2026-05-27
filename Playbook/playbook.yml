@@ -1,0 +1,77 @@
+
+---
+- name: Install git and a simple web page
+  hosts: amzlinux_clients
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Apache
+      yum:
+        name: "{{ apache_amzlinux }}"
+        state: present
+
+    - name: Start Apache service
+      service:
+        name: "{{ apache_amzlinux }}"
+        state: started
+        enabled: yes
+
+    - name: Create a simple index.html page
+      copy: 
+        dest: /var/www/html/index.html 
+        content: |
+          <html>
+          <body>
+          <h1 style="color:Blue;">Welcome to CloudSpace</h1>
+          </body>
+          </html>
+        owner: root
+        group: root 
+        mode: '0644'
+
+    - name: Install git 
+      yum:
+        name: git
+        state: present
+
+
+
+- name: Install git and a simple web page
+  hosts: ubuntu_clients
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Apache
+      apt:
+        name: "{{ apache_ubuntu }}"
+        state: present
+        update_cache: yes
+
+    - name: Start Apache service
+      service:
+        name: "{{ apache_ubuntu }}"
+        state: started
+        enabled: yes
+
+    - name: Create a simple index.html page
+      copy: 
+        dest: /var/www/html/index.html 
+        content: |
+          <html>
+          <body>
+          <h1 style="color:Blue;">Welcome to CloudSpace</h1>
+          </body>
+          </html>
+        owner: root
+        group: root  
+        mode: '0644'
+
+    - name: Install git 
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    
