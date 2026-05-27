@@ -1,0 +1,89 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Launch 4 EC2 clients for Ansible lab (2 Amazon Linux, 2 Ubuntu)
+  Parameters allow selecting keypair, security group, and AMI via SSM
+
+Parameters:
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Select the keypair for all clients
+
+  ClientSG:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security Group to attach to all clients
+
+  AmazonLinuxAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+    Description: SSM parameter for Amazon Linux 2 AMI
+
+  UbuntuAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id
+    Description: SSM parameter for Ubuntu 22.04 AMI
+
+Resources:
+
+  # Amazon Linux Clients
+  AmzClient1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref AmazonLinuxAMI
+      SecurityGroupIds: [!Ref ClientSG]
+      Tags:
+        - Key: Name
+          Value: amzclient1
+
+  AmzClient2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref AmazonLinuxAMI
+      SecurityGroupIds: [!Ref ClientSG]
+      Tags:
+        - Key: Name
+          Value: amzclient2
+
+  # Ubuntu Clients
+  UbuntuClient1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref UbuntuAMI
+      SecurityGroupIds: [!Ref ClientSG]
+      Tags:
+        - Key: Name
+          Value: ubuntuclient1
+
+  UbuntuClient2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      ImageId: !Ref UbuntuAMI
+      SecurityGroupIds: [!Ref ClientSG]
+      Tags:
+        - Key: Name
+          Value: ubuntuclient2
+
+Outputs:
+  AmzClient1PrivateIP:
+    Description: Private IP of amzclient1
+    Value: !GetAtt AmzClient1.PrivateIp
+
+  AmzClient2PrivateIP:
+    Description: Private IP of amzclient2
+    Value: !GetAtt AmzClient2.PrivateIp
+
+  UbuntuClient1PrivateIP:
+    Description: Private IP of ubuntuclient1
+    Value: !GetAtt UbuntuClient1.PrivateIp
+
+  UbuntuClient2PrivateIP:
+    Description: Private IP of ubuntuclient2
+    Value: !GetAtt UbuntuClient2.PrivateIp
