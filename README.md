@@ -57,9 +57,14 @@ Launch an **Amazon Linux EC2 instance** that will act as the Ansible control nod
 
 ---
 
-# Step 2 — * launch Amazon Linux and ubuntu EC2 instance** that will act as the Ansible clients.
+# Step 2 — * Launch multiple EC2 instances that will be managed by Ansible** 
+This project includes:
 
+- Amazon Linux clients
+- Ubuntu clients
 Allow inbound SSH access.
+The same key pair is used
+- Instances are reachable from the controller
 
 | Type | Protocol | Port | Source |
 |---|---|---|---|
@@ -83,11 +88,7 @@ sudo yum install python3 -y
 
 ## Screenshot — Python Installation
 
-```text
-Add Screenshot (9) here
-```
-
----
+<img width="1826" height="864" alt="Screenshot (9)" src="https://github.com/user-attachments/assets/03b032a3-9324-4db0-a8ef-630477d4e463" />
 
 # Step 4 — Install Ansible
 
@@ -105,30 +106,9 @@ ansible --version
 
 ## Screenshot — Ansible Installation
 
-```text
-Add Screenshot (10) here
-```
+<img width="1888" height="975" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/8f651578-4c96-4c6e-9f49-9a3f81071794" />
 
----
-
-# Step 5 — Launch Client EC2 Instances
-
-Launch multiple EC2 instances that will be managed by Ansible.
-
-This project includes:
-
-- Amazon Linux clients
-- Ubuntu clients
-
-Ensure:
-
-- SSH access is enabled
-- The same key pair is used
-- Instances are reachable from the controller
-
----
-
-# Step 6 — Copy SSH Key Pair to Remote Server
+# Step 5 — Copy SSH Key Pair to Remote Server
 
 Use `scp` to securely copy the private key to the Ansible controller.
 
@@ -138,31 +118,14 @@ scp -i ansible-keypair.pem ansible-keypair.pem ec2-user@54.72.120.89:/home/ec2-u
 
 ---
 
-# Step 7 — SSH into Client Servers
+# Step 6 — SSH into Client Servers
 
-Example connection to Amazon Linux:
+- Example connection to Amazon Linux:
+- Example connection to Ubuntu:
 
-```bash
-ssh -i ansible-keypair.pem ec2-user@<private-ip>
-```
+# Step 7 — Configure the Ansible Inventory File
 
-Example connection to Ubuntu:
-
-```bash
-ssh -i ansible-keypair.pem ubuntu@<private-ip>
-```
-
----
-
-# Step 8 — Configure the Ansible Inventory File
-
-Create an inventory file:
-
-```bash
-nano inventory
-```
-
-Add the following configuration:
+Adding the following configuration for the inventory:
 
 ```ini
 [amzlinux_clients]
@@ -179,14 +142,10 @@ ubuntu_clients
 ```
 
 ## Screenshot — Inventory Configuration
+<img width="1880" height="989" alt="Screenshot (11)" src="https://github.com/user-attachments/assets/eb28d94f-c2b8-4c28-8b46-cdcafbc8a1cd" />
 
-```text
-Add Screenshot (11) here
-```
 
----
-
-# Step 9 — Test Connectivity with Ansible Ping
+# Step 8 — Test Connectivity with Ansible Ping
 
 Run the following command:
 
@@ -196,67 +155,23 @@ ansible clients -i inventory -m ping --private-key=ansible-keypair.pem
 
 Expected output:
 
-```bash
-SUCCESS => {
-    "ping": "pong"
-}
-```
-
 ## Screenshot — Successful Ansible Ping
+<img width="1867" height="991" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/bfdeb4c3-e92a-4e97-beb2-5c3bf5eac61a" />
 
-```text
-Add Screenshot (12) here
-```
 
----
-
-# Step 10 — Run the Ansible Playbook
+# Step 9 — Run the Ansible Playbook
 
 Example playbook execution:
+<img width="1882" height="975" alt="Screenshot (13)" src="https://github.com/user-attachments/assets/9cdba125-c717-4588-91d3-c4a7e17569fc" />
 
-```bash
-ansible-playbook -i inventory playbook.yml --private-key=ansible-keypair.pem
-```
 
 The playbook automatically:
 
-- Installs Apache on Ubuntu servers
+- Installs Apache on Ubuntu & Amz linux servers
 - Configures services
 - Starts Apache services
 - Applies automated configurations to all managed nodes
-
----
-
-# Sample Playbook
-
-```yaml
----
-- name: Install and start Apache on Ubuntu
-  hosts: ubuntu_clients
-  become: yes
-
-  tasks:
-    - name: Install apache2
-      apt:
-        name: apache2
-        state: present
-        update_cache: yes
-
-    - name: Start Apache service
-      service:
-        name: apache2
-        state: started
-        enabled: yes
-```
-
----
-
-# Screenshot — Successful Playbook Execution
-
-```text
-Add Screenshot (13) here
-```
-
+- install Git
 ---
 
 # Project Outcomes
@@ -270,47 +185,11 @@ This project successfully demonstrates:
 - SSH-based orchestration
 - Cross-platform Linux management (Amazon Linux & Ubuntu)
 
----
-
-# Key Ansible Commands Used
-
-## Ping all managed nodes
-
-```bash
-ansible all -i inventory -m ping --private-key=ansible-keypair.pem
-```
-
-## Run a playbook
-
-```bash
-ansible-playbook -i inventory playbook.yml --private-key=ansible-keypair.pem
-```
-
-## Check inventory hosts
-
-```bash
-ansible-inventory -i inventory --list
-```
-
----
-
-# Future Improvements
-
-- Use Ansible Roles
-- Automate Nginx deployment
-- Integrate with Jenkins CI/CD
-- Use Dynamic AWS Inventory
-- Store secrets using Ansible Vault
-- Automate Docker installation
-- Configure Kubernetes worker nodes
-
----
-
 # Author
 
 ## Edah Efemena Evans
 
 Cloud & DevOps Engineer  
-AWS | Ansible | Docker | Kubernetes | CI/CD
+AWS | Ansible | 
 
 
